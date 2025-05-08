@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HealthRisk AI - Disease Risk Prediction</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <span class="gradient-text">HealthRisk AI</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#home">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#features">Features</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#about">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#screenshots">Screenshots</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#get-started">Get Started</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#contact">Contact</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero-section">
+        <div class="container text-center">
+            <h1 class="display-3 fw-bold mb-4">Transforming Healthcare with AI</h1>
+            <p class="lead mb-5">Advanced disease risk prediction powered by machine learning</p>
+            <div class="d-flex justify-content-center gap-3">
+                <a href="#features" class="btn btn-primary btn-lg">Learn More</a>
+                <a href="#demo" class="btn btn-outline-light btn-lg">See Demo</a>
+            </div>
+        </div>
+        <div class="wave-bottom">
+            <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
+                <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z" class="shape-fill"></path>
+            </svg>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="section-padding">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="section-title">Key Features</h2>
+                <p class="section-subtitle">Our AI-powered solution offers comprehensive health risk assessment</p>
+            </div>
+            
+            <div class="row g-4">
+                <!-- Feature 1 -->
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-heartbeat"></i>
+                        </div>
+                        <h3>Disease Risk Prediction</h3>
+                        <p>Advanced algorithms analyze patient data to identify potential health risks with high accuracy.</p>
+                    </div>
+                </div>
+                
+                <!-- Feature 2 -->
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-stethoscope"></i>
+                        </div>
+                        <h3>Personalized Recommendations</h3>
+                        <p>Receive customized health recommendations based on individual risk factors and health profiles.</p>
+                    </div>
+                </div>
+                
+                <!-- Feature 3 -->
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <h3>Comprehensive Analytics</h3>
+                        <p>Visual dashboards and detailed reports provide insights into health trends and risk patterns.</p>
+                    </div>
+                </div>
+                
+                <!-- Feature 4 -->
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-user-md"></i>
+                        </div>
+                        <h3>Patient Management</h3>
+                        <p>Efficiently organize and access patient records with secure, searchable database functionality.</p>
+                    </div>
+                </div>
+                
+                <!-- Feature 5 -->
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <h3>Secure Data Handling</h3>
+                        <p>Patient information is protected with enterprise-grade security and privacy protocols.</p>
+                    </div>
+                </div>
+                
+                <!-- Feature 6 -->
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-brain"></i>
+                        </div>
+                        <h3>Advanced ML Models</h3>
+                        <p>Continuously improving prediction accuracy through machine learning and data analysis.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="section-padding bg-light">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6 mb-4 mb-lg-0">
+                    <img src="images/about-image.svg" alt="About HealthRisk AI" class="img-fluid rounded shadow-lg">
+                </div>
+                <div class="col-lg-6">
+                    <h2 class="section-title">About HealthRisk AI</h2>
+                    <p class="mb-4">HealthRisk AI is an advanced healthcare application designed to predict disease risk based on comprehensive patient data analysis using state-of-the-art machine learning algorithms.</p>
+                    
+                    <div class="about-features">
+                        <div class="about-feature">
+                            <i class="fas fa-check-circle"></i>
+                            <p>Evidence-based risk assessment using multiple health parameters</p>
+                        </div>
+                        <div class="about-feature">
+                            <i class="fas fa-check-circle"></i>
+                            <p>Integration of medical history, lifestyle factors and clinical measurements</p>
+                        </div>
+                        <div class="about-feature">
+                            <i class="fas fa-check-circle"></i>
+                            <p>Developed in collaboration with healthcare professionals</p>
+                        </div>
+                        <div class="about-feature">
+                            <i class="fas fa-check-circle"></i>
+                            <p>Continuous improvement through machine learning</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Screenshots Section -->
+    <section id="screenshots" class="section-padding">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="section-title">Application Screenshots</h2>
+                <p class="section-subtitle">See the HealthRisk AI platform in action</p>
+            </div>
+            
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <div class="screenshot-card">
+                        <img src="images/dashboard.svg" alt="Dashboard" class="img-fluid">
+                        <div class="screenshot-overlay">
+                            <h4>Interactive Dashboard</h4>
+                            <p>Comprehensive overview of patient statistics and risk assessments</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="screenshot-card">
+                        <img src="images/patient-assessment.svg" alt="Patient Assessment" class="img-fluid">
+                        <div class="screenshot-overlay">
+                            <h4>Patient Assessment</h4>
+                            <p>Detailed data collection for accurate risk analysis</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="screenshot-card">
+                        <img src="images/risk-analysis.svg" alt="Risk Analysis" class="img-fluid">
+                        <div class="screenshot-overlay">
+                            <h4>Risk Analysis</h4>
+                            <p>Visual representation of risk factors and personalized recommendations</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="screenshot-card">
+                        <img src="images/model-performance.svg" alt="Model Performance" class="img-fluid">
+                        <div class="screenshot-overlay">
+                            <h4>Model Performance</h4>
+                            <p>Transparency in AI model metrics and feature importance</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Get Started Section -->
+    <section id="get-started" class="section-padding">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="section-title">Get Started</h2>
+                <p class="section-subtitle">Download and deploy HealthRisk AI on your own system</p>
+            </div>
+            
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <div class="get-started-card">
+                        <div class="row align-items-center">
+                            <div class="col-md-6 mb-4 mb-md-0">
+                                <h3>Download the Project</h3>
+                                <p>Get the complete HealthRisk AI application with all source code, database schemas, and machine learning models.</p>
+                                <div class="d-grid gap-3">
+                                    <a href="https://github.com/yourusername/HealthRisk-AI/archive/refs/heads/main.zip" class="btn btn-primary">
+                                        <i class="fas fa-download me-2"></i> Download Source Code
+                                    </a>
+                                    <a href="https://github.com/yourusername/HealthRisk-AI" class="btn btn-outline-primary">
+                                        <i class="fab fa-github me-2"></i> View on GitHub
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="installation-steps">
+                                    <h4>Quick Installation</h4>
+                                    <div class="code-block">
+                                        <pre><code># Clone repository
+git clone https://github.com/yourusername/HealthRisk-AI.git
+
+# Change directory
+cd HealthRisk-AI
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Setup database
+python setup_database.py
+
+# Run the application
+streamlit run app.py</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Technical Information -->
+    <section id="technical" class="section-padding bg-light">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="section-title">Technical Details</h2>
+                <p class="section-subtitle">Built with industry-leading technologies</p>
+            </div>
+            
+            <div class="row">
+                <div class="col-lg-8 mx-auto">
+                    <div class="tech-card">
+                        <h4>Technology Stack</h4>
+                        <div class="tech-grid">
+                            <div class="tech-item">
+                                <i class="fab fa-python"></i>
+                                <span>Python</span>
+                            </div>
+                            <div class="tech-item">
+                                <i class="fas fa-chart-bar"></i>
+                                <span>Streamlit</span>
+                            </div>
+                            <div class="tech-item">
+                                <i class="fas fa-database"></i>
+                                <span>PostgreSQL</span>
+                            </div>
+                            <div class="tech-item">
+                                <i class="fas fa-brain"></i>
+                                <span>Scikit-learn</span>
+                            </div>
+                            <div class="tech-item">
+                                <i class="fas fa-table"></i>
+                                <span>Pandas</span>
+                            </div>
+                            <div class="tech-item">
+                                <i class="fas fa-chart-line"></i>
+                                <span>Plotly</span>
+                            </div>
+                        </div>
+                        
+                        <h4 class="mt-4">Data Processing Pipeline</h4>
+                        <div class="pipeline-steps">
+                            <div class="pipeline-step">
+                                <div class="step-number">1</div>
+                                <div class="step-content">
+                                    <h5>Data Collection</h5>
+                                    <p>Comprehensive patient information gathering</p>
+                                </div>
+                            </div>
+                            <div class="pipeline-step">
+                                <div class="step-number">2</div>
+                                <div class="step-content">
+                                    <h5>Preprocessing</h5>
+                                    <p>Feature engineering and data normalization</p>
+                                </div>
+                            </div>
+                            <div class="pipeline-step">
+                                <div class="step-number">3</div>
+                                <div class="step-content">
+                                    <h5>Risk Analysis</h5>
+                                    <p>Machine learning model prediction</p>
+                                </div>
+                            </div>
+                            <div class="pipeline-step">
+                                <div class="step-number">4</div>
+                                <div class="step-content">
+                                    <h5>Recommendation</h5>
+                                    <p>Personalized health suggestions</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="section-padding">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="section-title">Get In Touch</h2>
+                <p class="section-subtitle">Interested in HealthRisk AI? Contact us for more information</p>
+            </div>
+            
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="contact-card">
+                        <div class="row">
+                            <div class="col-md-6 mb-4 mb-md-0">
+                                <h4>Contact Information</h4>
+                                <div class="contact-info">
+                                    <div class="contact-item">
+                                        <i class="fas fa-envelope"></i>
+                                        <span>info@healthriskai.com</span>
+                                    </div>
+                                    <div class="contact-item">
+                                        <i class="fas fa-phone"></i>
+                                        <span>+1 (555) 123-4567</span>
+                                    </div>
+                                    <div class="contact-item">
+                                        <i class="fas fa-map-marker-alt"></i>
+                                        <span>123 Health Avenue, Medical District</span>
+                                    </div>
+                                </div>
+                                <div class="social-icons mt-4">
+                                    <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+                                    <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+                                    <a href="#" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
+                                    <a href="#" class="social-icon"><i class="fab fa-github"></i></a>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <h4>Send Us a Message</h4>
+                                <form>
+                                    <div class="mb-3">
+                                        <input type="text" class="form-control" placeholder="Your Name">
+                                    </div>
+                                    <div class="mb-3">
+                                        <input type="email" class="form-control" placeholder="Your Email">
+                                    </div>
+                                    <div class="mb-3">
+                                        <textarea class="form-control" rows="4" placeholder="Your Message"></textarea>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Send Message</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 mb-4 mb-lg-0">
+                    <h4>HealthRisk AI</h4>
+                    <p>Transforming healthcare with AI-powered disease risk prediction based on comprehensive patient data analysis.</p>
+                </div>
+                <div class="col-lg-2 col-md-4 mb-4 mb-md-0">
+                    <h5>Links</h5>
+                    <ul class="footer-links">
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="#features">Features</a></li>
+                        <li><a href="#about">About</a></li>
+                        <li><a href="#screenshots">Screenshots</a></li>
+                        <li><a href="#get-started">Get Started</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3 col-md-4 mb-4 mb-md-0">
+                    <h5>Resources</h5>
+                    <ul class="footer-links">
+                        <li><a href="#">Documentation</a></li>
+                        <li><a href="#">API Reference</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Terms of Service</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3 col-md-4">
+                    <h5>Newsletter</h5>
+                    <p>Subscribe for updates on healthcare AI innovations</p>
+                    <div class="input-group">
+                        <input type="email" class="form-control" placeholder="Your Email">
+                        <button class="btn btn-primary" type="button">Subscribe</button>
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <div class="text-center copyright">
+                <p>&copy; 2025 HealthRisk AI. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script src="js/main.js"></script>
+</body>
+</html>
