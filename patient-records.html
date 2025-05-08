@@ -1,0 +1,1031 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Records - HealthRisk AI</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Additional styles for patient records */
+        .records-container {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .patient-card {
+            border-radius: 8px;
+            border-left: 4px solid #2E86C1;
+            background-color: #f8f9fa;
+            padding: 15px;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+        }
+        
+        .patient-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .patient-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .patient-name {
+            font-weight: 700;
+            color: #2C3E50;
+            margin-bottom: 0;
+        }
+        
+        .patient-id {
+            color: #7F8C8D;
+            font-size: 0.9rem;
+        }
+        
+        .patient-details {
+            margin-top: 15px;
+            display: none;
+        }
+        
+        .patient-info-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .info-item {
+            line-height: 1.4;
+        }
+        
+        .info-label {
+            font-weight: 600;
+            color: #7F8C8D;
+            font-size: 0.85rem;
+            display: block;
+        }
+        
+        .info-value {
+            color: #2C3E50;
+        }
+        
+        .tabs {
+            display: flex;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .tab {
+            padding: 10px 15px;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+        
+        .tab.active {
+            border-bottom: 2px solid #2E86C1;
+            color: #2E86C1;
+            font-weight: 600;
+        }
+        
+        .tab-content {
+            padding: 15px 0;
+        }
+        
+        .risk-badge {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .risk-low {
+            background-color: #D5F5E3;
+            color: #27AE60;
+        }
+        
+        .risk-medium {
+            background-color: #FCF3CF;
+            color: #F39C12;
+        }
+        
+        .risk-high {
+            background-color: #FADBD8;
+            color: #E74C3C;
+        }
+        
+        .search-container {
+            margin-bottom: 30px;
+        }
+        
+        .filter-container {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .risk-history {
+            height: 150px;
+            margin-bottom: 20px;
+            position: relative;
+        }
+        
+        .risk-line {
+            position: absolute;
+            bottom: 30px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: #ddd;
+        }
+        
+        .risk-point {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            bottom: 26px;
+            transform: translateX(-50%);
+            cursor: pointer;
+        }
+        
+        .risk-point:hover::after {
+            content: attr(data-score);
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #2C3E50;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+        }
+        
+        .risk-point:nth-child(1) { left: 10%; background-color: #27AE60; }
+        .risk-point:nth-child(2) { left: 30%; background-color: #F39C12; }
+        .risk-point:nth-child(3) { left: 50%; background-color: #E74C3C; }
+        .risk-point:nth-child(4) { left: 70%; background-color: #F39C12; }
+        .risk-point:nth-child(5) { left: 90%; background-color: #27AE60; }
+        
+        .risk-date {
+            position: absolute;
+            bottom: 0;
+            font-size: 0.75rem;
+            color: #7F8C8D;
+            transform: translateX(-50%);
+        }
+        
+        .risk-date:nth-child(6) { left: 10%; }
+        .risk-date:nth-child(7) { left: 30%; }
+        .risk-date:nth-child(8) { left: 50%; }
+        .risk-date:nth-child(9) { left: 70%; }
+        .risk-date:nth-child(10) { left: 90%; }
+        
+        .no-records {
+            text-align: center;
+            padding: 40px 20px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            color: #7F8C8D;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <span class="gradient-text">HealthRisk AI</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html#home">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html#features">Features</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html#about">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html#screenshots">Screenshots</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="patient-assessment.html">Try Assessment</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="patient-records.html">Patient Records</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html#contact">Contact</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container text-center">
+            <h1 class="display-4 fw-bold mb-4">Patient Records Demo</h1>
+            <p class="lead mb-3">Efficiently manage and analyze patient health records with HealthRisk AI</p>
+            <p class="mb-5"><small class="text-white-50">This is a demonstration with sample data. In the full application, all patient data is securely stored and encrypted.</small></p>
+        </div>
+        <div class="wave-bottom">
+            <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
+                <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z" class="shape-fill"></path>
+            </svg>
+        </div>
+    </section>
+
+    <!-- Patient Records Section -->
+    <section class="section-padding">
+        <div class="container">
+            <div class="row">
+                <!-- Sidebar / Filters -->
+                <div class="col-lg-3 mb-4">
+                    <div class="filter-container">
+                        <h4 class="mb-3">Search & Filter</h4>
+                        <div class="mb-3">
+                            <label for="searchPatient" class="form-label">Search Patients</label>
+                            <input type="text" class="form-control" id="searchPatient" placeholder="Name or ID">
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Risk Level</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="riskLow" checked>
+                                <label class="form-check-label" for="riskLow">
+                                    Low Risk
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="riskMedium" checked>
+                                <label class="form-check-label" for="riskMedium">
+                                    Medium Risk
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="riskHigh" checked>
+                                <label class="form-check-label" for="riskHigh">
+                                    High Risk
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="sortBy" class="form-label">Sort By</label>
+                            <select class="form-select" id="sortBy">
+                                <option value="name">Name (A-Z)</option>
+                                <option value="name-desc">Name (Z-A)</option>
+                                <option value="risk-high">Highest Risk</option>
+                                <option value="risk-low">Lowest Risk</option>
+                                <option value="date-new">Most Recent</option>
+                                <option value="date-old">Oldest</option>
+                            </select>
+                        </div>
+                        
+                        <button type="button" class="btn btn-primary w-100" id="applyFilters">
+                            <i class="fas fa-filter me-2"></i> Apply Filters
+                        </button>
+                    </div>
+                    
+                    <div class="records-stats p-3 bg-light rounded">
+                        <h5>Statistics</h5>
+                        <div class="mb-2 d-flex justify-content-between">
+                            <span>Total Patients:</span>
+                            <span class="fw-bold">5</span>
+                        </div>
+                        <div class="mb-2 d-flex justify-content-between">
+                            <span>Low Risk:</span>
+                            <span class="fw-bold text-success">2</span>
+                        </div>
+                        <div class="mb-2 d-flex justify-content-between">
+                            <span>Medium Risk:</span>
+                            <span class="fw-bold text-warning">2</span>
+                        </div>
+                        <div class="mb-2 d-flex justify-content-between">
+                            <span>High Risk:</span>
+                            <span class="fw-bold text-danger">1</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Patient Records -->
+                <div class="col-lg-9">
+                    <div class="records-container">
+                        <h3 class="mb-4">Patient Records</h3>
+                        
+                        <!-- Patient 1 -->
+                        <div class="patient-card" data-risk="low">
+                            <div class="patient-header" onclick="togglePatientDetails(this)">
+                                <div>
+                                    <h5 class="patient-name">John Smith</h5>
+                                    <span class="patient-id">ID: 10001</span>
+                                </div>
+                                <div class="d-flex align-items-center">
+                                    <span class="risk-badge risk-low me-3">Low Risk</span>
+                                    <i class="fas fa-chevron-down"></i>
+                                </div>
+                            </div>
+                            
+                            <div class="patient-details">
+                                <div class="tabs">
+                                    <div class="tab active" onclick="switchTab(this, 'basic-info-1')">Basic Info</div>
+                                    <div class="tab" onclick="switchTab(this, 'health-metrics-1')">Health Metrics</div>
+                                    <div class="tab" onclick="switchTab(this, 'risk-history-1')">Risk History</div>
+                                </div>
+                                
+                                <div id="basic-info-1" class="tab-content active">
+                                    <div class="patient-info-grid">
+                                        <div class="info-item">
+                                            <span class="info-label">Age</span>
+                                            <span class="info-value">42</span>
+                                        </div>
+                                        <div class="info-item">
+                                            <span class="info-label">Gender</span>
+                                            <span class="info-value">Male</span>
+                                        </div>
+                                        <div class="info-item">
+                                            <span class="info-label">Date of Birth</span>
+                                            <span class="info-value">May 15, 1981</span>
+                                        </div>
+                                        <div class="info-item">
+                                            <span class="info-label">Phone</span>
+                                            <span class="info-value">(555) 123-4567</span>
+                                        </div>
+                                        <div class="info-item">
+                                            <span class="info-label">Email</span>
+                                            <span class="info-value">john.smith@example.com</span>
+                                        </div>
+                                        <div class="info-item">
+                                            <span class="info-label">Last Assessment</span>
+                                            <span class="info-value">April 12, 2025</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div id="health-metrics-1" class="tab-content">
+                                    <div class="patient-info-grid">
+                                        <div class="info-item">
+                                            <span class="info-label">Height</span>
+                                            <span class="info-value">176 cm</span>
+                                        </div>
+                                        <div class="info-item">
+                                            <span class="info-label">Weight</span>
+                                            <span class="info-value">74 kg</span>
+                                        </div>
+                                        <div class="info-item">
+                                            <span class="info-label">BMI</span>
+                                            <span class="info-value">23.9</span>
+                                        </div>
+                                        <div class="info-item">
+                                            <span class="info-label">Blood Pressure</span>
+                                            <span class="info-value">122/78 mmHg</span>
+                                        </div>
+                                        <div class="info-item">
+                                            <span class="info-label">Cholesterol</span>
+                                            <span class="info-value">180 mg/dL</span>
+                                        </div>
+                                        <div class="info-item">
+                                            <span class="info-label">Smoking Status</span>
+                                            <span class="info-value">Non-smoker</span>
+                                        </div>
+                                        <div class="info-item">
+                                            <span class="info-label">Exercise Level</span>
+                                            <span class="info-value">Active</span>
+                                        </div>
+                                        <div class="info-item">
+                                            <span class="info-label">Diabetes</span>
+                                            <span class="info-value">No</span>
+                                        </div>
+                                        <div class="info-item">
+                                            <span class="info-label">Family History</span>
+                                            <span class="info-value">No</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div id="risk-history-1" class="tab-content">
+                                    <div class="risk-history">
+                                        <div class="risk-line"></div>
+                                        <div class="risk-point" data-score="0.21" style="left: 10%"></div>
+                                        <div class="risk-point" data-score="0.18" style="left: 30%"></div>
+                                        <div class="risk-point" data-score="0.22" style="left: 50%"></div>
+                                        <div class="risk-point" data-score="0.19" style="left: 70%"></div>
+                                        <div class="risk-point" data-score="0.15" style="left: 90%"></div>
+                                        <div class="risk-date" style="left: 10%">Jun 2024</div>
+                                        <div class="risk-date" style="left: 30%">Aug 2024</div>
+                                        <div class="risk-date" style="left: 50%">Oct 2024</div>
+                                        <div class="risk-date" style="left: 70%">Jan 2025</div>
+                                        <div class="risk-date" style="left: 90%">Apr 2025</div>
+                                    </div>
+                                    <p class="mb-2"><strong>Recent Trend:</strong> <span class="text-success">Improving</span></p>
+                                    <p><strong>Key Recommendation:</strong> Continue current exercise routine and diet.</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Patient 2 -->
+                        <div class="patient-card" data-risk="high">
+                            <div class="patient-header" onclick="togglePatientDetails(this)">
+                                <div>
+                                    <h5 class="patient-name">Sarah Johnson</h5>
+                                    <span class="patient-id">ID: 10002</span>
+                                </div>
+                                <div class="d-flex align-items-center">
+                                    <span class="risk-badge risk-high me-3">High Risk</span>
+                                    <i class="fas fa-chevron-down"></i>
+                                </div>
+                            </div>
+                            
+                            <div class="patient-details">
+                                <div class="tabs">
+                                    <div class="tab active" onclick="switchTab(this, 'basic-info-2')">Basic Info</div>
+                                    <div class="tab" onclick="switchTab(this, 'health-metrics-2')">Health Metrics</div>
+                                    <div class="tab" onclick="switchTab(this, 'risk-history-2')">Risk History</div>
+                                </div>
+                                
+                                <div id="basic-info-2" class="tab-content active">
+                                    <div class="patient-info-grid">
+                                        <div class="info-item">
+                                            <span class="info-label">Age</span>
+                                            <span class="info-value">58</span>
+                                        </div>
+                                        <div class="info-item">
+                                            <span class="info-label">Gender</span>
+                                            <span class="info-value">Female</span>
+                                        </div>
+                                        <div class="info-item">
+                                            <span class="info-label">Date of Birth</span>
+                                            <span class="info-value">Nov 22, 1966</span>
+                                        </div>
+                                        <div class="info-item">
+                                            <span class="info-label">Phone</span>
+                                            <span class="info-value">(555) 987-6543</span>
+                                        </div>
+                                        <div class="info-item">
+                                            <span class="info-label">Email</span>
+                                            <span class="info-value">sarah.j@example.com</span>
+                                        </div>
+                                        <div class="info-item">
+                                            <span class="info-label">Last Assessment</span>
+                                            <span class="info-value">April 5, 2025</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div id="health-metrics-2" class="tab-content">
+                                    <div class="patient-info-grid">
+                                        <div class="info-item">
+                                            <span class="info-label">Height</span>
+                                            <span class="info-value">165 cm</span>
+                                        </div>
+                                        <div class="info-item">
+                                            <span class="info-label">Weight</span>
+                                            <span class="info-value">88 kg</span>
+                                        </div>
+                                        <div class="info-item">
+                                            <span class="info-label">BMI</span>
+                                            <span class="info-value">32.3</span>
+                                        </div>
+                                        <div class="info-item">
+                                            <span class="info-label">Blood Pressure</span>
+                                            <span class="info-value">148/92 mmHg</span>
+                                        </div>
+                                        <div class="info-item">
+                                            <span class="info-label">Cholesterol</span>
+                                            <span class="info-value">245 mg/dL</span>
+                                        </div>
+                                        <div class="info-item">
+                                            <span class="info-label">Smoking Status</span>
+                                            <span class="info-value">Former smoker</span>
+                                        </div>
+                                        <div class="info-item">
+                                            <span class="info-label">Exercise Level</span>
+                                            <span class="info-value">Sedentary</span>
+                                        </div>
+                                        <div class="info-item">
+                                            <span class="info-label">Diabetes</span>
+                                            <span class="info-value">Type 2</span>
+                                        </div>
+                                        <div class="info-item">
+                                            <span class="info-label">Family History</span>
+                                            <span class="info-value">Yes</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div id="risk-history-2" class="tab-content">
+                                    <div class="risk-history">
+                                        <div class="risk-line"></div>
+                                        <div class="risk-point" data-score="0.68" style="left: 10%"></div>
+                                        <div class="risk-point" data-score="0.72" style="left: 30%"></div>
+                                        <div class="risk-point" data-score="0.78" style="left: 50%"></div>
+                                        <div class="risk-point" data-score="0.75" style="left: 70%"></div>
+                                        <div class="risk-point" data-score="0.81" style="left: 90%"></div>
+                                        <div class="risk-date" style="left: 10%">Jun 2024</div>
+                                        <div class="risk-date" style="left: 30%">Aug 2024</div>
+                                        <div class="risk-date" style="left: 50%">Nov 2024</div>
+                                        <div class="risk-date" style="left: 70%">Jan 2025</div>
+                                        <div class="risk-date" style="left: 90%">Apr 2025</div>
+                                    </div>
+                                    <p class="mb-2"><strong>Recent Trend:</strong> <span class="text-danger">Worsening</span></p>
+                                    <p><strong>Key Recommendation:</strong> Urgent medical consultation and lifestyle intervention required.</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Patient 3 -->
+                        <div class="patient-card" data-risk="medium">
+                            <div class="patient-header" onclick="togglePatientDetails(this)">
+                                <div>
+                                    <h5 class="patient-name">Michael Chen</h5>
+                                    <span class="patient-id">ID: 10003</span>
+                                </div>
+                                <div class="d-flex align-items-center">
+                                    <span class="risk-badge risk-medium me-3">Medium Risk</span>
+                                    <i class="fas fa-chevron-down"></i>
+                                </div>
+                            </div>
+                            
+                            <div class="patient-details">
+                                <div class="tabs">
+                                    <div class="tab active" onclick="switchTab(this, 'basic-info-3')">Basic Info</div>
+                                    <div class="tab" onclick="switchTab(this, 'health-metrics-3')">Health Metrics</div>
+                                    <div class="tab" onclick="switchTab(this, 'risk-history-3')">Risk History</div>
+                                </div>
+                                
+                                <div id="basic-info-3" class="tab-content active">
+                                    <div class="patient-info-grid">
+                                        <div class="info-item">
+                                            <span class="info-label">Age</span>
+                                            <span class="info-value">35</span>
+                                        </div>
+                                        <div class="info-item">
+                                            <span class="info-label">Gender</span>
+                                            <span class="info-value">Male</span>
+                                        </div>
+                                        <div class="info-item">
+                                            <span class="info-label">Date of Birth</span>
+                                            <span class="info-value">Feb 8, 1990</span>
+                                        </div>
+                                        <div class="info-item">
+                                            <span class="info-label">Phone</span>
+                                            <span class="info-value">(555) 456-7890</span>
+                                        </div>
+                                        <div class="info-item">
+                                            <span class="info-label">Email</span>
+                                            <span class="info-value">m.chen@example.com</span>
+                                        </div>
+                                        <div class="info-item">
+                                            <span class="info-label">Last Assessment</span>
+                                            <span class="info-value">March 30, 2025</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div id="health-metrics-3" class="tab-content">
+                                    <div class="patient-info-grid">
+                                        <div class="info-item">
+                                            <span class="info-label">Height</span>
+                                            <span class="info-value">178 cm</span>
+                                        </div>
+                                        <div class="info-item">
+                                            <span class="info-label">Weight</span>
+                                            <span class="info-value">83 kg</span>
+                                        </div>
+                                        <div class="info-item">
+                                            <span class="info-label">BMI</span>
+                                            <span class="info-value">26.2</span>
+                                        </div>
+                                        <div class="info-item">
+                                            <span class="info-label">Blood Pressure</span>
+                                            <span class="info-value">135/85 mmHg</span>
+                                        </div>
+                                        <div class="info-item">
+                                            <span class="info-label">Cholesterol</span>
+                                            <span class="info-value">210 mg/dL</span>
+                                        </div>
+                                        <div class="info-item">
+                                            <span class="info-label">Smoking Status</span>
+                                            <span class="info-value">Current smoker</span>
+                                        </div>
+                                        <div class="info-item">
+                                            <span class="info-label">Exercise Level</span>
+                                            <span class="info-value">Light</span>
+                                        </div>
+                                        <div class="info-item">
+                                            <span class="info-label">Diabetes</span>
+                                            <span class="info-value">No</span>
+                                        </div>
+                                        <div class="info-item">
+                                            <span class="info-label">Family History</span>
+                                            <span class="info-value">No</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div id="risk-history-3" class="tab-content">
+                                    <div class="risk-history">
+                                        <div class="risk-line"></div>
+                                        <div class="risk-point" data-score="0.32" style="left: 10%"></div>
+                                        <div class="risk-point" data-score="0.45" style="left: 30%"></div>
+                                        <div class="risk-point" data-score="0.51" style="left: 50%"></div>
+                                        <div class="risk-point" data-score="0.48" style="left: 70%"></div>
+                                        <div class="risk-point" data-score="0.42" style="left: 90%"></div>
+                                        <div class="risk-date" style="left: 10%">Jul 2024</div>
+                                        <div class="risk-date" style="left: 30%">Sep 2024</div>
+                                        <div class="risk-date" style="left: 50%">Nov 2024</div>
+                                        <div class="risk-date" style="left: 70%">Jan 2025</div>
+                                        <div class="risk-date" style="left: 90%">Mar 2025</div>
+                                    </div>
+                                    <p class="mb-2"><strong>Recent Trend:</strong> <span class="text-success">Improving</span></p>
+                                    <p><strong>Key Recommendation:</strong> Smoking cessation program and increased physical activity.</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Add more patients as needed -->
+                        <!-- Patient 4 -->
+                        <div class="patient-card" data-risk="low">
+                            <div class="patient-header" onclick="togglePatientDetails(this)">
+                                <div>
+                                    <h5 class="patient-name">Emily Rodriguez</h5>
+                                    <span class="patient-id">ID: 10004</span>
+                                </div>
+                                <div class="d-flex align-items-center">
+                                    <span class="risk-badge risk-low me-3">Low Risk</span>
+                                    <i class="fas fa-chevron-down"></i>
+                                </div>
+                            </div>
+                            
+                            <div class="patient-details">
+                                <div class="tabs">
+                                    <div class="tab active" onclick="switchTab(this, 'basic-info-4')">Basic Info</div>
+                                    <div class="tab" onclick="switchTab(this, 'health-metrics-4')">Health Metrics</div>
+                                    <div class="tab" onclick="switchTab(this, 'risk-history-4')">Risk History</div>
+                                </div>
+                                
+                                <div id="basic-info-4" class="tab-content active">
+                                    <div class="patient-info-grid">
+                                        <div class="info-item">
+                                            <span class="info-label">Age</span>
+                                            <span class="info-value">29</span>
+                                        </div>
+                                        <div class="info-item">
+                                            <span class="info-label">Gender</span>
+                                            <span class="info-value">Female</span>
+                                        </div>
+                                        <div class="info-item">
+                                            <span class="info-label">Date of Birth</span>
+                                            <span class="info-value">Mar 17, 1996</span>
+                                        </div>
+                                        <div class="info-item">
+                                            <span class="info-label">Phone</span>
+                                            <span class="info-value">(555) 234-5678</span>
+                                        </div>
+                                        <div class="info-item">
+                                            <span class="info-label">Email</span>
+                                            <span class="info-value">emily.r@example.com</span>
+                                        </div>
+                                        <div class="info-item">
+                                            <span class="info-label">Last Assessment</span>
+                                            <span class="info-value">April 15, 2025</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div id="health-metrics-4" class="tab-content">
+                                    <div class="patient-info-grid">
+                                        <div class="info-item">
+                                            <span class="info-label">Height</span>
+                                            <span class="info-value">170 cm</span>
+                                        </div>
+                                        <div class="info-item">
+                                            <span class="info-label">Weight</span>
+                                            <span class="info-value">62 kg</span>
+                                        </div>
+                                        <div class="info-item">
+                                            <span class="info-label">BMI</span>
+                                            <span class="info-value">21.5</span>
+                                        </div>
+                                        <div class="info-item">
+                                            <span class="info-label">Blood Pressure</span>
+                                            <span class="info-value">118/75 mmHg</span>
+                                        </div>
+                                        <div class="info-item">
+                                            <span class="info-label">Cholesterol</span>
+                                            <span class="info-value">165 mg/dL</span>
+                                        </div>
+                                        <div class="info-item">
+                                            <span class="info-label">Smoking Status</span>
+                                            <span class="info-value">Non-smoker</span>
+                                        </div>
+                                        <div class="info-item">
+                                            <span class="info-label">Exercise Level</span>
+                                            <span class="info-value">Very Active</span>
+                                        </div>
+                                        <div class="info-item">
+                                            <span class="info-label">Diabetes</span>
+                                            <span class="info-value">No</span>
+                                        </div>
+                                        <div class="info-item">
+                                            <span class="info-label">Family History</span>
+                                            <span class="info-value">No</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div id="risk-history-4" class="tab-content">
+                                    <div class="risk-history">
+                                        <div class="risk-line"></div>
+                                        <div class="risk-point" data-score="0.15" style="left: 10%"></div>
+                                        <div class="risk-point" data-score="0.18" style="left: 30%"></div>
+                                        <div class="risk-point" data-score="0.12" style="left: 50%"></div>
+                                        <div class="risk-point" data-score="0.14" style="left: 70%"></div>
+                                        <div class="risk-point" data-score="0.10" style="left: 90%"></div>
+                                        <div class="risk-date" style="left: 10%">Jun 2024</div>
+                                        <div class="risk-date" style="left: 30%">Sep 2024</div>
+                                        <div class="risk-date" style="left: 50%">Dec 2024</div>
+                                        <div class="risk-date" style="left: 70%">Feb 2025</div>
+                                        <div class="risk-date" style="left: 90%">Apr 2025</div>
+                                    </div>
+                                    <p class="mb-2"><strong>Recent Trend:</strong> <span class="text-success">Stable (Low Risk)</span></p>
+                                    <p><strong>Key Recommendation:</strong> Maintain current healthy lifestyle with regular check-ups.</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Patient 5 -->
+                        <div class="patient-card" data-risk="medium">
+                            <div class="patient-header" onclick="togglePatientDetails(this)">
+                                <div>
+                                    <h5 class="patient-name">Robert Patel</h5>
+                                    <span class="patient-id">ID: 10005</span>
+                                </div>
+                                <div class="d-flex align-items-center">
+                                    <span class="risk-badge risk-medium me-3">Medium Risk</span>
+                                    <i class="fas fa-chevron-down"></i>
+                                </div>
+                            </div>
+                            
+                            <div class="patient-details">
+                                <div class="tabs">
+                                    <div class="tab active" onclick="switchTab(this, 'basic-info-5')">Basic Info</div>
+                                    <div class="tab" onclick="switchTab(this, 'health-metrics-5')">Health Metrics</div>
+                                    <div class="tab" onclick="switchTab(this, 'risk-history-5')">Risk History</div>
+                                </div>
+                                
+                                <div id="basic-info-5" class="tab-content active">
+                                    <div class="patient-info-grid">
+                                        <div class="info-item">
+                                            <span class="info-label">Age</span>
+                                            <span class="info-value">51</span>
+                                        </div>
+                                        <div class="info-item">
+                                            <span class="info-label">Gender</span>
+                                            <span class="info-value">Male</span>
+                                        </div>
+                                        <div class="info-item">
+                                            <span class="info-label">Date of Birth</span>
+                                            <span class="info-value">Sep 3, 1973</span>
+                                        </div>
+                                        <div class="info-item">
+                                            <span class="info-label">Phone</span>
+                                            <span class="info-value">(555) 789-0123</span>
+                                        </div>
+                                        <div class="info-item">
+                                            <span class="info-label">Email</span>
+                                            <span class="info-value">r.patel@example.com</span>
+                                        </div>
+                                        <div class="info-item">
+                                            <span class="info-label">Last Assessment</span>
+                                            <span class="info-value">March 22, 2025</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div id="health-metrics-5" class="tab-content">
+                                    <div class="patient-info-grid">
+                                        <div class="info-item">
+                                            <span class="info-label">Height</span>
+                                            <span class="info-value">175 cm</span>
+                                        </div>
+                                        <div class="info-item">
+                                            <span class="info-label">Weight</span>
+                                            <span class="info-value">87 kg</span>
+                                        </div>
+                                        <div class="info-item">
+                                            <span class="info-label">BMI</span>
+                                            <span class="info-value">28.4</span>
+                                        </div>
+                                        <div class="info-item">
+                                            <span class="info-label">Blood Pressure</span>
+                                            <span class="info-value">138/88 mmHg</span>
+                                        </div>
+                                        <div class="info-item">
+                                            <span class="info-label">Cholesterol</span>
+                                            <span class="info-value">225 mg/dL</span>
+                                        </div>
+                                        <div class="info-item">
+                                            <span class="info-label">Smoking Status</span>
+                                            <span class="info-value">Former smoker</span>
+                                        </div>
+                                        <div class="info-item">
+                                            <span class="info-label">Exercise Level</span>
+                                            <span class="info-value">Light</span>
+                                        </div>
+                                        <div class="info-item">
+                                            <span class="info-label">Diabetes</span>
+                                            <span class="info-value">No</span>
+                                        </div>
+                                        <div class="info-item">
+                                            <span class="info-label">Family History</span>
+                                            <span class="info-value">Yes</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div id="risk-history-5" class="tab-content">
+                                    <div class="risk-history">
+                                        <div class="risk-line"></div>
+                                        <div class="risk-point" data-score="0.35" style="left: 10%"></div>
+                                        <div class="risk-point" data-score="0.42" style="left: 30%"></div>
+                                        <div class="risk-point" data-score="0.58" style="left: 50%"></div>
+                                        <div class="risk-point" data-score="0.62" style="left: 70%"></div>
+                                        <div class="risk-point" data-score="0.55" style="left: 90%"></div>
+                                        <div class="risk-date" style="left: 10%">May 2024</div>
+                                        <div class="risk-date" style="left: 30%">Aug 2024</div>
+                                        <div class="risk-date" style="left: 50%">Nov 2024</div>
+                                        <div class="risk-date" style="left: 70%">Jan 2025</div>
+                                        <div class="risk-date" style="left: 90%">Mar 2025</div>
+                                    </div>
+                                    <p class="mb-2"><strong>Recent Trend:</strong> <span class="text-warning">Variable</span></p>
+                                    <p><strong>Key Recommendation:</strong> Weight management program and increased physical activity.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4 d-flex justify-content-between">
+                        <button type="button" class="btn btn-outline-primary">
+                            <i class="fas fa-download me-2"></i> Export Records
+                        </button>
+                        <div>
+                            <button type="button" class="btn btn-outline-secondary me-2">
+                                <i class="fas fa-print me-2"></i> Print
+                            </button>
+                            <button type="button" class="btn btn-primary">
+                                <i class="fas fa-plus me-2"></i> Add New Patient
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 mb-4 mb-lg-0">
+                    <h4>HealthRisk AI</h4>
+                    <p>Transforming healthcare with AI-powered disease risk prediction based on comprehensive patient data analysis.</p>
+                </div>
+                <div class="col-lg-2 col-md-4 mb-4 mb-md-0">
+                    <h5>Links</h5>
+                    <ul class="footer-links">
+                        <li><a href="index.html#home">Home</a></li>
+                        <li><a href="index.html#features">Features</a></li>
+                        <li><a href="index.html#about">About</a></li>
+                        <li><a href="index.html#screenshots">Screenshots</a></li>
+                        <li><a href="patient-assessment.html">Try Assessment</a></li>
+                        <li><a href="patient-records.html">Patient Records</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3 col-md-4 mb-4 mb-md-0">
+                    <h5>Resources</h5>
+                    <ul class="footer-links">
+                        <li><a href="#">Documentation</a></li>
+                        <li><a href="#">API Reference</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Terms of Service</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3 col-md-4">
+                    <h5>Newsletter</h5>
+                    <p>Subscribe for updates on healthcare AI innovations</p>
+                    <div class="input-group">
+                        <input type="email" class="form-control" placeholder="Your Email">
+                        <button class="btn btn-primary" type="button">Subscribe</button>
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <div class="text-center copyright">
+                <p>&copy; 2025 HealthRisk AI. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JS -->
+    <script>
+        // Toggle patient details
+        function togglePatientDetails(element) {
+            const detailsElement = element.parentElement.querySelector('.patient-details');
+            const iconElement = element.querySelector('i');
+            
+            if (detailsElement.style.display === 'block') {
+                detailsElement.style.display = 'none';
+                iconElement.classList.remove('fa-chevron-up');
+                iconElement.classList.add('fa-chevron-down');
+            } else {
+                detailsElement.style.display = 'block';
+                iconElement.classList.remove('fa-chevron-down');
+                iconElement.classList.add('fa-chevron-up');
+            }
+        }
+        
+        // Switch between tabs
+        function switchTab(tabElement, contentId) {
+            // Remove active class from all tabs in the same group
+            const tabGroup = tabElement.parentElement;
+            const tabs = tabGroup.querySelectorAll('.tab');
+            tabs.forEach(tab => tab.classList.remove('active'));
+            
+            // Add active class to clicked tab
+            tabElement.classList.add('active');
+            
+            // Hide all tab contents in this patient card
+            const patientCard = tabGroup.closest('.patient-card');
+            const tabContents = patientCard.querySelectorAll('.tab-content');
+            tabContents.forEach(content => content.classList.remove('active'));
+            
+            // Show the selected content
+            document.getElementById(contentId).classList.add('active');
+        }
+        
+        // Search functionality
+        document.getElementById('searchPatient').addEventListener('keyup', function() {
+            const searchTerm = this.value.toLowerCase();
+            const patientCards = document.querySelectorAll('.patient-card');
+            
+            patientCards.forEach(card => {
+                const patientName = card.querySelector('.patient-name').textContent.toLowerCase();
+                const patientId = card.querySelector('.patient-id').textContent.toLowerCase();
+                
+                if (patientName.includes(searchTerm) || patientId.includes(searchTerm)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+        
+        // Apply filters button
+        document.getElementById('applyFilters').addEventListener('click', function() {
+            const showLow = document.getElementById('riskLow').checked;
+            const showMedium = document.getElementById('riskMedium').checked;
+            const showHigh = document.getElementById('riskHigh').checked;
+            const sortValue = document.getElementById('sortBy').value;
+            
+            // Filter by risk level
+            const patientCards = document.querySelectorAll('.patient-card');
+            patientCards.forEach(card => {
+                const riskLevel = card.getAttribute('data-risk');
+                
+                if ((riskLevel === 'low' && showLow) || 
+                    (riskLevel === 'medium' && showMedium) || 
+                    (riskLevel === 'high' && showHigh)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+            
+            // Sort functionality would go here in a real application
+            // This is a simplified demonstration
+        });
+    </script>
+</body>
+</html>
