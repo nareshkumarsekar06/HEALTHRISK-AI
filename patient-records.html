@@ -222,9 +222,7 @@
                     <li class="nav-item">
                         <a class="nav-link" href="index.html#about">About</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="index.html#screenshots">Screenshots</a>
-                    </li>
+
                     <li class="nav-item">
                         <a class="nav-link" href="patient-assessment.html">New Patient Assessment</a>
                     </li>
@@ -242,7 +240,7 @@
     <!-- Hero Section -->
     <section class="hero-section">
         <div class="container text-center">
-            <h1 class="display-4 fw-bold mb-4">Patient Records Demo</h1>
+            <h1 class="display-4 fw-bold mb-4">Patient Records</h1>
             <p class="lead mb-3">Efficiently manage and analyze patient health records with HealthRisk AI</p>
             <p class="mb-5"><small class="text-white-50">This is a demonstration with sample data. In the full application, all patient data is securely stored and encrypted.</small></p>
         </div>
@@ -329,7 +327,17 @@
                 <!-- Patient Records -->
                 <div class="col-lg-9">
                     <div class="records-container">
-                        <h3 class="mb-4">Patient Records</h3>
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h3 class="mb-0">Patient Records</h3>
+                            <div>
+                                <a href="patient-assessment.html" class="btn btn-primary me-2">
+                                    <i class="fas fa-plus me-1"></i> New Patient
+                                </a>
+                                <button class="btn btn-outline-secondary" onclick="printRecords()">
+                                    <i class="fas fa-print me-1"></i> Print
+                                </button>
+                            </div>
+                        </div>
                         
                         <!-- Patient 1 -->
                         <div class="patient-card" data-risk="low">
@@ -1026,6 +1034,11 @@
             // Sort functionality would go here in a real application
             // This is a simplified demonstration
         });
+        
+        // Print function
+        function printRecords() {
+            window.print();
+        }
     </script>
 </body>
 </html>
