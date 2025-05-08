@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Assessment - HealthRisk AI</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Additional styles for the form */
+        .form-section {
+            margin-bottom: 30px;
+        }
+        .assessment-form {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+        }
+        .form-label {
+            font-weight: 600;
+        }
+        .required-field::after {
+            content: "*";
+            color: #E74C3C;
+            margin-left: 5px;
+        }
+        .results-container {
+            display: none;
+            background: linear-gradient(45deg, #2E86C1, #3498DB);
+            color: white;
+            border-radius: 10px;
+            padding: 30px;
+            margin-top: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        .risk-meter {
+            width: 100%;
+            height: 25px;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            overflow: hidden;
+            margin: 15px 0;
+        }
+        .risk-level {
+            height: 100%;
+            background: linear-gradient(90deg, #27AE60, #F39C12, #E74C3C);
+            border-radius: 15px;
+            width: 0;
+            transition: width 1s ease-in-out;
+        }
+        .risk-indicator {
+            width: 20px;
+            height: 20px;
+            background-color: white;
+            border-radius: 50%;
+            position: relative;
+            top: -22px;
+            transition: left 1s ease-in-out;
+        }
+        .risk-factors-chart {
+            height: 250px;
+            margin-top: 20px;
+        }
+        .risk-factor-bar {
+            height: 20px;
+            background: linear-gradient(90deg, #3498DB, #2E86C1);
+            border-radius: 5px;
+            margin-bottom: 10px;
+            transition: width 1s ease-in-out;
+        }
+        .factor-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <span class="gradient-text">HealthRisk AI</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html#home">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html#features">Features</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html#about">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html#screenshots">Screenshots</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="patient-assessment.html">Try It</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html#get-started">Get Started</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html#contact">Contact</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container text-center">
+            <h1 class="display-4 fw-bold mb-4">Patient Assessment Demo</h1>
+            <p class="lead mb-3">Experience how HealthRisk AI analyzes patient data to predict disease risk</p>
+            <p class="mb-5"><small class="text-white-50">This is a demonstration. In the full application, data is securely stored and processed.</small></p>
+        </div>
+        <div class="wave-bottom">
+            <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
+                <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z" class="shape-fill"></path>
+            </svg>
+        </div>
+    </section>
+
+    <!-- Assessment Form Section -->
+    <section class="section-padding">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <form id="assessmentForm" class="assessment-form">
+                        <!-- Personal Information -->
+                        <div class="form-section">
+                            <h3 class="mb-4">Personal Information</h3>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label for="firstName" class="form-label required-field">First Name</label>
+                                    <input type="text" class="form-control" id="firstName" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="lastName" class="form-label required-field">Last Name</label>
+                                    <input type="text" class="form-control" id="lastName" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="gender" class="form-label required-field">Gender</label>
+                                    <select class="form-select" id="gender" required>
+                                        <option value="" selected disabled>Select gender</option>
+                                        <option value="Male">Male</option>
+                                        <option value="Female">Female</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="dob" class="form-label required-field">Date of Birth</label>
+                                    <input type="date" class="form-control" id="dob" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="email" class="form-label">Email Address</label>
+                                    <input type="email" class="form-control" id="email">
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="phone" class="form-label">Phone Number</label>
+                                    <input type="tel" class="form-control" id="phone">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Health Metrics -->
+                        <div class="form-section">
+                            <h3 class="mb-4">Health Metrics</h3>
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <label for="height" class="form-label required-field">Height (cm)</label>
+                                    <input type="number" class="form-control" id="height" min="0" step="0.1" required>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="weight" class="form-label required-field">Weight (kg)</label>
+                                    <input type="number" class="form-control" id="weight" min="0" step="0.1" required>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="bmi" class="form-label">BMI</label>
+                                    <input type="number" class="form-control" id="bmi" readonly>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="cholesterol" class="form-label">Total Cholesterol (mg/dL)</label>
+                                    <input type="number" class="form-control" id="cholesterol" min="0" step="0.1">
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="hdl" class="form-label">HDL Cholesterol (mg/dL)</label>
+                                    <input type="number" class="form-control" id="hdl" min="0" step="0.1">
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="ldl" class="form-label">LDL Cholesterol (mg/dL)</label>
+                                    <input type="number" class="form-control" id="ldl" min="0" step="0.1">
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="triglycerides" class="form-label">Triglycerides (mg/dL)</label>
+                                    <input type="number" class="form-control" id="triglycerides" min="0" step="0.1">
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="systolicBP" class="form-label">Systolic BP (mmHg)</label>
+                                    <input type="number" class="form-control" id="systolicBP" min="0">
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="diastolicBP" class="form-label">Diastolic BP (mmHg)</label>
+                                    <input type="number" class="form-control" id="diastolicBP" min="0">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Medical History -->
+                        <div class="form-section">
+                            <h3 class="mb-4">Medical History & Lifestyle</h3>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label for="smoking" class="form-label">Smoking Status</label>
+                                    <select class="form-select" id="smoking">
+                                        <option value="Non-smoker" selected>Non-smoker</option>
+                                        <option value="Former smoker">Former smoker</option>
+                                        <option value="Current smoker">Current smoker</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="alcohol" class="form-label">Alcohol Consumption</label>
+                                    <select class="form-select" id="alcohol">
+                                        <option value="None" selected>None</option>
+                                        <option value="Occasional">Occasional</option>
+                                        <option value="Moderate">Moderate</option>
+                                        <option value="Heavy">Heavy</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="diabetes" class="form-label">Diabetes</label>
+                                    <select class="form-select" id="diabetes">
+                                        <option value="No" selected>No</option>
+                                        <option value="Type 1">Type 1</option>
+                                        <option value="Type 2">Type 2</option>
+                                        <option value="Gestational">Gestational</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="heartDisease" class="form-label">Family History of Heart Disease</label>
+                                    <select class="form-select" id="heartDisease">
+                                        <option value="No" selected>No</option>
+                                        <option value="Yes">Yes</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-12">
+                                    <label for="exercise" class="form-label">Physical Activity Level</label>
+                                    <select class="form-select" id="exercise">
+                                        <option value="Sedentary">Sedentary</option>
+                                        <option value="Light">Light</option>
+                                        <option value="Moderate" selected>Moderate</option>
+                                        <option value="Active">Active</option>
+                                        <option value="Very Active">Very Active</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="text-center mt-4">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="fas fa-heartbeat me-2"></i> Predict Disease Risk
+                            </button>
+                        </div>
+                    </form>
+
+                    <!-- Results Section (initially hidden) -->
+                    <div id="resultsContainer" class="results-container">
+                        <div class="text-center mb-4">
+                            <h2 class="mb-3">Risk Assessment Results</h2>
+                            <p class="lead">Based on the provided information, here is your health risk assessment:</p>
+                        </div>
+
+                        <div class="row mb-4">
+                            <div class="col-md-4 text-center">
+                                <h3 id="riskScore">0.00</h3>
+                                <p>Risk Score</p>
+                            </div>
+                            <div class="col-md-8">
+                                <p class="mb-2">Risk Category: <span id="riskCategory" class="fw-bold">Low</span></p>
+                                <div class="risk-meter">
+                                    <div id="riskLevel" class="risk-level"></div>
+                                    <div id="riskIndicator" class="risk-indicator"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h4 class="mb-3">Key Risk Factors</h4>
+                        <div class="risk-factors-chart">
+                            <div class="factor-label">
+                                <span>Age</span>
+                                <span id="ageFactor">25%</span>
+                            </div>
+                            <div id="ageBar" class="risk-factor-bar" style="width: 25%"></div>
+
+                            <div class="factor-label">
+                                <span>BMI</span>
+                                <span id="bmiFactor">18%</span>
+                            </div>
+                            <div id="bmiBar" class="risk-factor-bar" style="width: 18%"></div>
+
+                            <div class="factor-label">
+                                <span>Blood Pressure</span>
+                                <span id="bpFactor">15%</span>
+                            </div>
+                            <div id="bpBar" class="risk-factor-bar" style="width: 15%"></div>
+
+                            <div class="factor-label">
+                                <span>Cholesterol</span>
+                                <span id="cholesterolFactor">12%</span>
+                            </div>
+                            <div id="cholesterolBar" class="risk-factor-bar" style="width: 12%"></div>
+
+                            <div class="factor-label">
+                                <span>Lifestyle</span>
+                                <span id="lifestyleFactor">10%</span>
+                            </div>
+                            <div id="lifestyleBar" class="risk-factor-bar" style="width: 10%"></div>
+                        </div>
+
+                        <h4 class="mt-4 mb-3">Recommendations</h4>
+                        <ul id="recommendationsList" class="mb-4">
+                            <li>Maintain a balanced diet rich in fruits, vegetables, and whole grains.</li>
+                            <li>Aim for at least 150 minutes of moderate physical activity per week.</li>
+                            <li>Schedule regular check-ups to monitor your health metrics.</li>
+                        </ul>
+
+                        <div class="alert alert-info">
+                            <strong>Disclaimer:</strong> This is a demonstration of the HealthRisk AI application. In a real implementation, predictions are based on sophisticated machine learning models trained on extensive healthcare data. Always consult with a healthcare professional for medical advice.
+                        </div>
+
+                        <div class="text-center mt-4">
+                            <button id="newAssessmentBtn" class="btn btn-light btn-lg">
+                                <i class="fas fa-redo me-2"></i> New Assessment
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 mb-4 mb-lg-0">
+                    <h4>HealthRisk AI</h4>
+                    <p>Transforming healthcare with AI-powered disease risk prediction based on comprehensive patient data analysis.</p>
+                </div>
+                <div class="col-lg-2 col-md-4 mb-4 mb-md-0">
+                    <h5>Links</h5>
+                    <ul class="footer-links">
+                        <li><a href="index.html#home">Home</a></li>
+                        <li><a href="index.html#features">Features</a></li>
+                        <li><a href="index.html#about">About</a></li>
+                        <li><a href="index.html#screenshots">Screenshots</a></li>
+                        <li><a href="index.html#get-started">Get Started</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3 col-md-4 mb-4 mb-md-0">
+                    <h5>Resources</h5>
+                    <ul class="footer-links">
+                        <li><a href="#">Documentation</a></li>
+                        <li><a href="#">API Reference</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Terms of Service</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3 col-md-4">
+                    <h5>Newsletter</h5>
+                    <p>Subscribe for updates on healthcare AI innovations</p>
+                    <div class="input-group">
+                        <input type="email" class="form-control" placeholder="Your Email">
+                        <button class="btn btn-primary" type="button">Subscribe</button>
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <div class="text-center copyright">
+                <p>&copy; 2025 HealthRisk AI. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JS -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Calculate BMI when height or weight changes
+            const heightInput = document.getElementById('height');
+            const weightInput = document.getElementById('weight');
+            const bmiInput = document.getElementById('bmi');
+            
+            function calculateBMI() {
+                const height = parseFloat(heightInput.value);
+                const weight = parseFloat(weightInput.value);
+                
+                if (height > 0 && weight > 0) {
+                    const bmi = weight / Math.pow(height/100, 2);
+                    bmiInput.value = bmi.toFixed(1);
+                } else {
+                    bmiInput.value = '';
+                }
+            }
+            
+            heightInput.addEventListener('input', calculateBMI);
+            weightInput.addEventListener('input', calculateBMI);
+            
+            // Form submission
+            const assessmentForm = document.getElementById('assessmentForm');
+            const resultsContainer = document.getElementById('resultsContainer');
+            
+            assessmentForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Simulate loading
+                const submitBtn = assessmentForm.querySelector('button[type="submit"]');
+                const originalText = submitBtn.innerHTML;
+                submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Processing...';
+                submitBtn.disabled = true;
+                
+                // Simulate API call and processing
+                setTimeout(function() {
+                    // Calculate risk score based on form data (simplified demo)
+                    let riskScore = 0;
+                    
+                    // Age factor
+                    const dob = new Date(document.getElementById('dob').value);
+                    const today = new Date();
+                    const age = Math.floor((today - dob) / (365.25 * 24 * 60 * 60 * 1000));
+                    
+                    if (age > 50) riskScore += 0.2;
+                    else if (age > 40) riskScore += 0.15;
+                    else if (age > 30) riskScore += 0.1;
+                    
+                    // BMI factor
+                    const bmi = parseFloat(document.getElementById('bmi').value);
+                    if (bmi > 30) riskScore += 0.2;
+                    else if (bmi > 25) riskScore += 0.15;
+                    else if (bmi < 18.5) riskScore += 0.1;
+                    
+                    // Blood pressure
+                    const systolic = parseInt(document.getElementById('systolicBP').value) || 120;
+                    const diastolic = parseInt(document.getElementById('diastolicBP').value) || 80;
+                    
+                    if (systolic > 140 || diastolic > 90) riskScore += 0.2;
+                    else if (systolic > 130 || diastolic > 85) riskScore += 0.1;
+                    
+                    // Smoking
+                    const smoking = document.getElementById('smoking').value;
+                    if (smoking === 'Current smoker') riskScore += 0.2;
+                    else if (smoking === 'Former smoker') riskScore += 0.1;
+                    
+                    // Diabetes
+                    const diabetes = document.getElementById('diabetes').value;
+                    if (diabetes !== 'No') riskScore += 0.15;
+                    
+                    // Heart disease family history
+                    const heartDisease = document.getElementById('heartDisease').value;
+                    if (heartDisease === 'Yes') riskScore += 0.15;
+                    
+                    // Exercise
+                    const exercise = document.getElementById('exercise').value;
+                    if (exercise === 'Sedentary') riskScore += 0.1;
+                    else if (exercise === 'Light') riskScore += 0.05;
+                    else if (exercise === 'Very Active') riskScore -= 0.05;
+                    
+                    // Cap risk score between 0 and 1
+                    riskScore = Math.max(0, Math.min(1, riskScore));
+                    
+                    // Update the results
+                    document.getElementById('riskScore').textContent = riskScore.toFixed(2);
+                    
+                    // Risk category
+                    let riskCategory;
+                    if (riskScore < 0.3) {
+                        riskCategory = 'Low';
+                        document.getElementById('riskCategory').style.color = '#27AE60';
+                    } else if (riskScore < 0.7) {
+                        riskCategory = 'Medium';
+                        document.getElementById('riskCategory').style.color = '#F39C12';
+                    } else {
+                        riskCategory = 'High';
+                        document.getElementById('riskCategory').style.color = '#E74C3C';
+                    }
+                    document.getElementById('riskCategory').textContent = riskCategory;
+                    
+                    // Update risk meter
+                    document.getElementById('riskLevel').style.width = `${riskScore * 100}%`;
+                    document.getElementById('riskIndicator').style.left = `${riskScore * 100}%`;
+                    
+                    // Calculate relative factor contributions
+                    const factors = {
+                        age: age > 30 ? (age > 40 ? (age > 50 ? 0.3 : 0.25) : 0.2) : 0.15,
+                        bmi: (bmi > 25 || bmi < 18.5) ? (bmi > 30 ? 0.25 : 0.2) : 0.15,
+                        bp: (systolic > 130 || diastolic > 85) ? (systolic > 140 || diastolic > 90 ? 0.2 : 0.15) : 0.1,
+                        cholesterol: 0.15,
+                        lifestyle: (smoking !== 'Non-smoker' || diabetes !== 'No' || heartDisease === 'Yes' || exercise === 'Sedentary') ? 0.25 : 0.15
+                    };
+                    
+                    // Normalize factors to sum to 100%
+                    const total = Object.values(factors).reduce((a, b) => a + b, 0);
+                    for (let key in factors) {
+                        factors[key] = Math.round((factors[key] / total) * 100);
+                    }
+                    
+                    // Update factor bars
+                    document.getElementById('ageFactor').textContent = `${factors.age}%`;
+                    document.getElementById('ageBar').style.width = `${factors.age}%`;
+                    
+                    document.getElementById('bmiFactor').textContent = `${factors.bmi}%`;
+                    document.getElementById('bmiBar').style.width = `${factors.bmi}%`;
+                    
+                    document.getElementById('bpFactor').textContent = `${factors.bp}%`;
+                    document.getElementById('bpBar').style.width = `${factors.bp}%`;
+                    
+                    document.getElementById('cholesterolFactor').textContent = `${factors.cholesterol}%`;
+                    document.getElementById('cholesterolBar').style.width = `${factors.cholesterol}%`;
+                    
+                    document.getElementById('lifestyleFactor').textContent = `${factors.lifestyle}%`;
+                    document.getElementById('lifestyleBar').style.width = `${factors.lifestyle}%`;
+                    
+                    // Generate custom recommendations
+                    const recommendations = [];
+                    
+                    if (bmi > 25) {
+                        recommendations.push('Consider a controlled diet and exercise plan to achieve a healthy BMI.');
+                    }
+                    
+                    if (systolic > 130 || diastolic > 80) {
+                        recommendations.push('Monitor blood pressure regularly and consider lifestyle modifications to reduce it.');
+                    }
+                    
+                    if (smoking === 'Current smoker') {
+                        recommendations.push('Quitting smoking can significantly reduce your disease risk.');
+                    }
+                    
+                    if (exercise === 'Sedentary' || exercise === 'Light') {
+                        recommendations.push('Aim for at least 150 minutes of moderate exercise per week.');
+                    }
+                    
+                    if (diabetes !== 'No') {
+                        recommendations.push('Continue to monitor and manage your diabetes under medical supervision.');
+                    }
+                    
+                    // Update recommendations list
+                    const recommendationsList = document.getElementById('recommendationsList');
+                    recommendationsList.innerHTML = '';
+                    
+                    // Add default recommendations if none specific
+                    if (recommendations.length === 0) {
+                        recommendations.push('Maintain a balanced diet rich in fruits, vegetables, and whole grains.');
+                        recommendations.push('Continue your current level of physical activity.');
+                        recommendations.push('Schedule regular health check-ups to monitor your health metrics.');
+                    }
+                    
+                    recommendations.forEach(recommendation => {
+                        const li = document.createElement('li');
+                        li.textContent = recommendation;
+                        recommendationsList.appendChild(li);
+                    });
+                    
+                    // Display results
+                    assessmentForm.style.display = 'none';
+                    resultsContainer.style.display = 'block';
+                    
+                    // Scroll to results
+                    resultsContainer.scrollIntoView({ behavior: 'smooth' });
+                    
+                    // Reset button state
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
+                }, 1500);
+            });
+            
+            // New assessment button
+            document.getElementById('newAssessmentBtn').addEventListener('click', function() {
+                resultsContainer.style.display = 'none';
+                assessmentForm.style.display = 'block';
+                assessmentForm.reset();
+                assessmentForm.scrollIntoView({ behavior: 'smooth' });
+            });
+        });
+    </script>
+</body>
+</html>
